@@ -1,0 +1,37 @@
+theme: minima
+  
+title: Dissecting the Code
+author: Sergey Teplyakov
+description: > # this means to ignore newlines until "show_exerpts:"
+  Exploring the Hidden Sides of C# and .NET
+show_excerpts: true
+
+google_analytics: UA-140652392-1
+disqus:
+    shortname: dissecting-the-code
+
+minima:
+  # generate social links in footer
+  social_links:
+    twitter: STeplyakov
+    github:  SergeyTeplyakov
+    rss: rss
+    linkedin: sergeyteplyakov
+# If you want to link only specific pages in your header, uncomment
+# this and add the path to the pages in order as they should show up
+#header_pages:
+# - about.md
+
+# Build settings
+theme: minima
+
+plugins:
+ - jekyll-feed
+ - jekyll-seo-tag
+
+twitter_username: STeplyakov
+github_username: SergeyTeplyakov
+linkedin_username: sergeyteplyakov
+rss: rss
+
+

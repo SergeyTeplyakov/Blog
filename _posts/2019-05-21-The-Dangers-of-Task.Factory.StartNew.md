@@ -1,4 +1,8 @@
-# The Dangers of Task.Factory.StartNew
+---
+layout: post
+title: The Dangers of Task.Factory.StartNew
+categories: async
+---
 
 I've faced a very interesting problem recently with one of our production services: the service partially stopped responding to new requests even though some other parts of the service were still working.
 
