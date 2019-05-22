@@ -8,7 +8,6 @@ I've faced a very interesting problem recently with one of our production servic
 
 To understand the problem, let's review the following code. Suppose we have a service that processes internal requests in a "dedicated thread". To do that it creates a long-running task by passing `TaskCreationOptions.LongRunning` into `Task.Factory.StartNew` method and creates a continuation for error reporting purpose.
 
-
 ```csharp
 public class Processor
 {
@@ -29,7 +28,6 @@ public class Processor
 
     private async Task LoopAsync()
     {
-        // The _queue is 
         foreach (var request in _queue.GetConsumingEnumerable())
         {
             await ProcessRequest(request);
@@ -37,7 +35,6 @@ public class Processor
     }
 }
 ```
-
 
 What is the problem with this code? Quite a few, actually. And all of them are related to `LoopAsync` method return type.
 
@@ -51,7 +48,7 @@ The type of the `_task` field is `Task`, but what is the actual type of the obje
 
 `Task.Factory.StartNew` "wraps" the result of a given delegate into the task, and if the delegate itself returns a task, then the result is a task that creates a task.
 
-In this case, it means that the error handling here is completely wrong. **`_task.ContinueWith` creates a continuation of an outer task that will fail only if something will go terribly wrong with the system and the TPL will fail to create a task**. Otherwise, the outer task will succeed "hiding" potential issues with the inner task.
+In this case, it means that the error handling here is completely wrong. **`_task.ContinueWith` creates a continuation of an outer task that will fail only if something will go terribly wrong with the system and the TPL will fail to launch a new thread**. Otherwise, the outer task will succeed "hiding" potential issues with the inner task.
 
 Here is a simpler example:
 
@@ -75,7 +72,7 @@ When we run this code we'll see `Inside the delegate` message on the screen and 
 
 What should you do in this case? The simplest solution is just to switch to `Task.Run` that will return an underlying task because the API was designed with async methods in mind.
 
-**Use [`TaskExtensions.Unwrap`](https://referencesource.microsoft.com/#System.Core/System/Threading/Tasks/TaskExtensions.cs,123) to get an underlying task from `Task<Task>` instance.**
+## Use [`TaskExtensions.Unwrap`](https://referencesource.microsoft.com/#System.Core/System/Threading/Tasks/TaskExtensions.cs,123) extension method to get the underlying task from `Task<Task>` instance.
 
 But if you have to use `Task.Factory.StartNew` because you need to pass some other task creation options, then you can "unwrap" the resulting task to obtain the underlying task instance:
 
@@ -97,9 +94,19 @@ static void Main(string[] args)
 }
 ```
 
-**Always trace unobserved task exceptions**
+## Always trace unobserved task exceptions
 
-One way at least to mitigate the issues like this is to always react to unhandled exceptions in tasks. When a task fails but the user fails to "observe" the error, the [`TaskScheduler.UnobservedTaskException`](https://referencesource.microsoft.com/#mscorlib/system/threading/Tasks/TaskScheduler.cs,479) is triggered. Back in .NET 4.0 days unhandled task exceptions were "critical" and were causing the application to crash. Starting from .NET 4.5 the default behavior has changed and unhandled task exceptions may stay unnoticed (use [`<ThrowUnobservedTaskExceptions>`](https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/runtime/throwunobservedtaskexceptions-element) configuration section if you want to change it back).
+One way at least to mitigate the issues like this is to always react to unhandled exceptions in tasks. When a task fails but the user fails to "observe" the error, the [`TaskScheduler.UnobservedTaskException`](https://referencesource.microsoft.com/#mscorlib/system/threading/Tasks/TaskScheduler.cs,479) is triggered. Back in .NET 4.0 days unhandled task exceptions were "critical" and were causing an application to crash. Starting from .NET 4.5 the default behavior has changed (*) and unhandled task exceptions may stay unnoticed (use [`<ThrowUnobservedTaskExceptions>`](https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/runtime/throwunobservedtaskexceptions-element) configuration section if you want to change it back).
+
+(*) The reason for this change is quite simple: it is extremely simple in this "async" days to get an unobserved task exception. Simple code like this can cause it:
+
+```csharp
+var t1 = AsyncMethod1();
+var t2 = AsyncMethod2();
+// If both t1 and t2 will fail, then t2's error will be unobserved.
+await t1;
+await t2;
+```
 
 ## TLDR;
 * Never use `Task.Factory.StartNew` with `TaskCreationOptions.LongRunning` if the given delegate is backed by an async method.
@@ -107,4 +114,4 @@ One way at least to mitigate the issues like this is to always react to unhandle
 * If you have to use `Task.Factory.StartNew` with async methods, always call `Unwrap` to get the underlying task back.
 * Always trace unobserved task exceptions, because you never know what kind of subtle issues are hidden in your code. 
 
-If you work on a codebase that was started in .NET 4.0 era, I would highly suggest you to search for `Task.Factory.StartNew` usages and double check that you don't have the issues mentioned in this post.
+If you work on a codebase that was started in .NET 4.0 era, I would highly recommend you search for `Task.Factory.StartNew` usages and double check that you don't have the issues mentioned in this post.
