@@ -6,7 +6,7 @@ categories: concurrency
 
 Let's explore the following scenario: you have a service that copies files between machines. And to track the progress there is a special "copy watcher" thread (or task) that logs a current position of the target stream by accessing a `FileStream.Position` property.
 
-The question is: how safe or unsafe the access to `FileStream.Position` from another thread is? Of course, without any synchronization in place the "watcher" could be a bit off and get a previous file position. And because `Position` property is of type `long` the read operation could yield some very weird results on 32 bit platform for files larger than 2Gb. And, of course, the runtime could potentially do some weird optimizations due to lack of synchronization (even though this is not likely to happen in practice).
+The question is: how safe or unsafe the access to `FileStream.Position` from another thread is? Of course, without any synchronization in place, the "watcher" could be a bit off and get a previous file position. And because `Position` property is of type `long` the read operation could yield some very weird results on a 32-bit platform for files larger than 2Gb. And, of course, the runtime could potentially do some weird optimizations due to lack of synchronization (even though this is not likely to happen in practice).
 
 But is it possible for the watcher thread to affect the copy operation in a more drastic way? Like to corrupt the file?
 
@@ -54,7 +54,7 @@ public void ReadFileStreamPositionFromDifferentThread()
 
 We have a very simple code that writes synchronously to a file with blocks of 1024 characters `N` times. We can increase the `N` to be in millions, we can deploy this code to production and never see any errors for years. So we can make a conclusion that it is safe to read the `FileStream.Position` property while the other thread writes the content to the file.
 
-And then we make a simple change. We either call [`FileStream.SafeFileHandle`](https://referencesource.microsoft.com/#mscorlib/system/io/filestream.cs,1424) property on a `FileStream` instance or we start creating a `FileStream` instance by providing `SafeFileHandle` instance by calling, for instance, `new FileStream(safeHandle, FileAccess.Write)`.
+And then we make a simple change. We either call [`FileStream.SafeFileHandle`](https://referencesource.microsoft.com/#mscorlib/system/io/filestream.cs,1424) property on a `FileStream` instance or we start creating a `FileStream` by calling, for instance, `new FileStream(safeHandle, FileAccess.Write)`.
 
 ```csharp
 [Test]
@@ -132,19 +132,19 @@ unsafe private FileStreamAsyncResult BeginWriteCore(byte[] bytes, int offset, in
  
 ```
 
-If the file is not yet flushed and the next write operation is called when another thread calls `FileStream.Position` property, then the internal `_pos` field can be changed based on actual file position, effectively loosing one of the rights and corrupting the content of the file!
+If the file is not yet flushed and the next write operation is called when another thread calls `FileStream.Position` property, then the internal `_pos` field can be changed based on actual file position, effectively losing one of the rights and corrupting the content of the file!
 
-No one should assume that a property is thread-safe unless its clearly stated in the documentation and there are no such claims for any `FileStream` properties. On the other hand, when we think about thread unsafety due to concurrent reads of a property we rarely think about such drastic effects like corrupted files. [Framework Design Guidelines](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/property) taught us to treat properties as smart fields without such drastic side effects like IO operations in a property getter.
+No one should assume that a property is thread-safe unless it's clearly stated in the documentation and there are no such claims for any `FileStream` properties. On the other hand, when we think about thread unsafety due to concurrent reads of a property we rarely think about such drastic effects like corrupted files. [Framework Design Guidelines](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/property) taught us to treat properties as smart fields without such drastic side effects like IO operations in a property getter.
 
 I do understand that the `FileStream` implementation tries its best to protect us, the users, from undesirable errors and inconsistent state. But I also believe that such side effects, like potential file corruptions, should be more explicitly documented.
 
-TLDR; Reading a `FileStream.Position` from another thread during write operations when a stream's underlying `SafeFileHandle` is expose, is extremely dangerous and may cause file corruption.
+TLDR; Reading a `FileStream.Position` from another thread during write operations when a stream's underlying `SafeFileHandle` is exposed, is extremely dangerous and may cause file corruption.
 
 P.S. The issue could happen in full framework as well as in .NET Core.
 
 
-It was a very important lesson to me, that even a simple change could have a drastic effect for a distributed system.
-We've been running a service with concurrent `Position` reads for many years without any issues and a simple change in the code that switched `FileStream` to an "unsafe" mode caused a very strange and hard to understand issues in the system. But that was a very useful lesson for me anyways.
+It was a very important lesson for me, that even a simple change could have a drastic effect on a distributed system.
+We've been running a service with concurrent `Position` reads for many years without any issues and a simple change in the code that switched `FileStream` to an "unsafe" mode caused a very strange and hard to understand issues in the system. But that was a very useful lesson for me anyway.
 
 
 P.S. The issue affects both .NET Framework version as well as .NET Core version of `FileStream`.
