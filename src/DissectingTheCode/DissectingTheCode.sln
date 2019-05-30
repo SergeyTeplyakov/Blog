@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FielStreamPosition", "FielStreamPosition\FielStreamPosition.csproj", "{579D6B08-A963-4AA3-912B-BD174F97E2AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStreamPosition.NetCore", "FileStreamPosition.NetCore\FileStreamPosition.NetCore.csproj", "{E1EC22B9-C6A4-4FC3-B127-A5BF7C3C8B56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{579D6B08-A963-4AA3-912B-BD174F97E2AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{579D6B08-A963-4AA3-912B-BD174F97E2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{579D6B08-A963-4AA3-912B-BD174F97E2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{579D6B08-A963-4AA3-912B-BD174F97E2AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1EC22B9-C6A4-4FC3-B127-A5BF7C3C8B56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1EC22B9-C6A4-4FC3-B127-A5BF7C3C8B56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1EC22B9-C6A4-4FC3-B127-A5BF7C3C8B56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1EC22B9-C6A4-4FC3-B127-A5BF7C3C8B56}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6F4123CB-0951-46FE-8D1C-A3502378F2F1}
+	EndGlobalSection
+EndGlobal
