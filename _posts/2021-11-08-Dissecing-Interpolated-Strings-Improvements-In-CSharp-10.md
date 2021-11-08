@@ -1,4 +1,9 @@
-# Dissecting interpolated strings improvements in C# 10
+---
+layout: post
+title: Dissecting Interpolated Strings Improvements in C# 10
+categories: C#10
+---
+
 
 There are many interesting features coming into C# 10 and my favorite one is the improvements of interpolated strings.
 It may sound weird that the #1 feature for me is not a new one but an improvement of an existing one. That's because I do care a lot about performance and the interpolated string improvements in C# 10 will make my code faster without any changes from my side. But that's not it. The new design is not only allows creating strings faster, but it also allows skipping the string creation altogether!
