@@ -254,19 +254,11 @@ Again, once we had a hypothesis, we can validate it. In this case, the simplest 
 
 Full Framework results:
 
-![Full Framework Results](/Blog/assets/2023/11/02/images/classes_vs_structs_full_framework.png "Full Framework Results")
+![Full Framework Results](/Blog/assets/classes_vs_structs_full_framework.png "Full Framework Results")
 
 .NET Core results:
-1
-![.NET Core results](/Blog/assets/classes_vs_structs_1.png ".NET Core Results")
-![.NET Core results](/Blog/docs/assets/classes_vs_structs_1.png ".NET Core Results")
 
-2
-![.NET Core results](/assets/classes_vs_structs_1.png)
-3
-![.NET Core results](/docs/assets/classes_vs_structs_1.png)
-3
-![.NET Core results](/Blog/benchmarking/assets/classes_vs_structs_1.png)
+![.NET Core results](/Blog/assets/classes_vs_structs_1.png ".NET Core Results")
 
 As you can see from the DotTrace output, the .NET Core version calls the `PersonClass` constructor 1 million times, and the Full Framework version calls it 1.5 million times. This makes sense since the asymptotic complexity is the worst case that does not always happen. `ElementAt(i)` has to iterate up to the i-th element and should go through the entire sequence only on the last iteration. But as you can see, the optimization that .NET Core has is quite significant.
 
