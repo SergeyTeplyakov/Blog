@@ -259,8 +259,12 @@ Full Framework results:
 .NET Core results:
 1
 ![.NET Core results](/Blog/assets/classes_vs_structs_1.png ".NET Core Results")
+![.NET Core results](/Blog/docs/assets/classes_vs_structs_1.png ".NET Core Results")
+
 2
 ![.NET Core results](/assets/classes_vs_structs_1.png)
+3
+![.NET Core results](/docs/assets/classes_vs_structs_1.png)
 3
 ![.NET Core results](/Blog/benchmarking/assets/classes_vs_structs_1.png)
 
