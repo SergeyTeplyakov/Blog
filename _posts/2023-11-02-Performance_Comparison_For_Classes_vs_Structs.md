@@ -3,7 +3,6 @@ layout: post
 title: Classes vs. Structs. How not to teach about performance!
 categories: benchmarking
 ---
-# Classes vs. Structs. How not to teach about performance!
 
 It's been a while since my last blog post, but I believe it's better to post late than never, so here I am!
 
