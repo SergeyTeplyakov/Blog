@@ -97,7 +97,7 @@ Even though I think this is a very bad way to compare structs and classes, let's
 
 One thing every performance engineer should learn is the ability to interpret and explain the results. For instance, in this case, we changed the benchmarks to consume `classes` variable in a loop 1k times, and all of a sudden, the benchmark duration increased by 100x. Is it possible that accessing 1K elements in C# takes milliseconds? This sounds horrible! My gut reaction is that the construction is probably more expensive than the consumption, so I would not expect the benchmark to be significantly slower if done correctly. If you see a 100x difference in performance results, you should stop and think: why am I getting these results? Can I explain them? Is it possible that something is wrong with the benchmark?
 
-### Tip #3: Understand the code behind the scenes
+### Tip #2: Understand the code behind the scenes
 
 In many cases, developers can rely on good abstractions and ignore the implementation details, but this is not true for performance analysis. In order to properly interpret the results, a performance engineer should be able to look through the abstractions and see what's going on under the hood:
 
