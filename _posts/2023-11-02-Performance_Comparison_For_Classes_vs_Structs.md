@@ -89,7 +89,7 @@ The results are:
 
 ```
 
-And I'm quoting the author: "This time the difference is HUGE!" My first reaction was, "Okay, he's going to fix this, right? He's just playing with us, expecting us to catch the issue in the code. You can't have O(N^3) in the benchmark!" But nope, this was the final version of the code.
+And I'm quoting the author: "This time the difference is HUGE!" My first reaction was, "Okay, he's going to fix this, right? He's just playing with us, expecting us to catch the issue in the code. You can't have O(N^2) in the benchmark!" But nope, this was the final version of the code.
 
 Even though I think this is a very bad way to compare structs and classes, let's use this example to learn how we should be analyzing the results of the benchmarks.
 
@@ -97,7 +97,7 @@ Even though I think this is a very bad way to compare structs and classes, let's
 
 One thing every performance engineer should learn is the ability to interpret and explain the results. For instance, in this case, we changed the benchmarks to consume `classes` variable in a loop 1k times, and all of a sudden, the benchmark duration increased by 100x. Is it possible that accessing 1K elements in C# takes milliseconds? This sounds horrible! My gut reaction is that the construction is probably more expensive than the consumption, so I would not expect the benchmark to be significantly slower if done correctly. If you see a 100x difference in performance results, you should stop and think: why am I getting these results? Can I explain them? Is it possible that something is wrong with the benchmark?
 
-### Tip #3: Understand the code behind the scenes
+### Tip #2: Understand the code behind the scenes
 
 In many cases, developers can rely on good abstractions and ignore the implementation details, but this is not true for performance analysis. In order to properly interpret the results, a performance engineer should be able to look through the abstractions and see what's going on under the hood:
 
@@ -122,7 +122,7 @@ And once you arrive with a hypothesis, you can check it by writing a benchmark t
 | ClassAccessInLinkedList  | 4,806.1 ns | 141.65 ns | 410.96 ns |    4 |
 ```
 
-These are the results I would expect: less then a nano second for accessing an array, 10-ish % difference between classes and structs and a significant differences between accessing an array vs. accessing a linked list. But even in this case we should not draw any conclusions on how changing array to linked list would affect performance in a real-world cases, since the code normally does way more than just getting the data.
+These are the results I would expect: less then a nano second for accessing an array, 20-ish % difference between classes and structs and a significant differences between accessing an array vs. accessing a linked list. But even in this case we should not draw any conclusions on how changing array to linked list would affect performance in a real-world cases, since the code normally does way more than just getting the data.
 
 Lastly, it's important for every .NET engineer to have a solid understanding of algorithmic complexity and how LINQ works. We'll revisit this topic after the tips, as it's a key issue with these benchmarks.
 
@@ -158,7 +158,7 @@ public void ThousandClasses()
 
 The `classes` variable is an `IEnumerable<PersonClass>`, which is essentially a query (or a promise, or a generator) that will produce new results each time we consume it. However, on each iteration, we call `classes.Count()`, which calls `new Loops().Names` that creates 1,000 `PersonClass` instances just to return the number of items we want to consume. When you do O(N) work on each iteration, the entire loop's complexity becomes O(N^2), which is already quite bad. Then, on each iteration, we call `classes.ElementAt(i)`, which probably needs to traverse the entire sequence from the begining again.
 
-This means that the overall complexity is O(N^3)! And this O(N^3) time complexity and O(N^3) memory complexity. Meaning that for 1,000 elements, the benchmark could be doing up to 1 billion operations and allocate up to a billion instances of `PersonClass`` in the managed heap!
+This means that the overall complexity is `O(2*N^2)` (which I know is still O(N^2)! And this `O(2*N^2)` time complexity and O(2*N^2) memory complexity. Meaning that for 1,000 elements, the benchmark could be doing millions of operations and allocating millions of instances of `PersonClass`` in the managed heap!
 
 We can confirm this assumption by doing two things: 1) adding the `MemoryDiagnoser` attribute to see the allocations and 2) adding another case with either 100 or 10,000 elements to access the asymptotic complexity of the code.
 
@@ -192,9 +192,9 @@ And here are the results:
 
 The results of this run are different from what was presented in the course, since my `Loops().Names` property is just a LINQ query. However, the same differences between structs and classes are still present: structs are significantly faster than classes. Why? Because of the allocations. Allocations in the managed heap are fast, but when you need to do millions of them just to iterate the loop, they would skew the results badly. You can clearly see a non-linear complexity here: the count goes from 100 to 1,000 (10x), and the duration goes up by a factor of 70 and the allocations goes up by a factorof 100.
 
-It seems that the complexity is O(N^2) rather than O(N^3) as I expected. This is interesting! Obviously, my understanding of LINQ was incorrect.
+It seems that the complexity is O(N^2) rather than O(2*N^2) as I expected. This is interesting! Obviously, my understanding of LINQ was incorrect.
 
-Why? When I saw the results, my line of reasoning was that the complexity is O(N^3) because the loop itself is O(N), `Enumerable.Count()` used in the loop is O(N), and `Element.ElementAt(i)` is O(N) as well.
+Why? When I saw the results, my line of reasoning was the loop is O(N), `Enumerable.Count()` used in the loop is O(N), and `Element.ElementAt(i)` is O(N) as well. So for each loop iteration we iterate the loop from the begining twice.
 
 I first checked the full framework sources:
 
