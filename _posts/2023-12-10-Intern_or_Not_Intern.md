@@ -1,6 +1,6 @@
 ---
 layout: post
-title: String Interning - To Use or Not to Use? A Performance Question.
+title: String Interning - To Use or Not to Use? A Performance Question
 categories: benchmarking
 ---
 
