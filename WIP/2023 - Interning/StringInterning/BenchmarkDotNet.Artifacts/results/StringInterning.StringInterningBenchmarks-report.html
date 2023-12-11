@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>StringInterning.StringInterningBenchmarks-20231206-215913</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.11, Windows 11 (10.0.22621.2715/22H2/2022Update/SunValley2)
+11th Gen Intel Core i7-1185G7 3.00GHz, 1 CPU, 8 logical and 4 physical cores
+.NET SDK 8.0.100
+  [Host]     : .NET 7.0.14 (7.0.1423.51910), X64 RyuJIT AVX2
+  Job-RZRSSU : .NET 7.0.14-servicing.23519.10, X64 NativeAOT AVX2
+</code></pre>
+<pre><code>Runtime=NativeAOT 7.0  
+</code></pre>
+
+<table>
+<thead><tr><th>Method      </th><th>Count</th><th>Mean </th><th>Error</th><th>StdDev</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>String_Intern</td><td>10000</td><td>196.8 &mu;s</td><td>3.82 &mu;s</td><td>3.92 &mu;s</td><td>4.11 KB</td>
+</tr><tr><td>StringCache_Intern</td><td>10000</td><td>211.9 &mu;s</td><td>4.15 &mu;s</td><td>5.67 &mu;s</td><td>4.11 KB</td>
+</tr><tr><td>String_Intern</td><td>100000</td><td>1,680.1 &mu;s</td><td>47.58 &mu;s</td><td>140.28 &mu;s</td><td>4.14 KB</td>
+</tr><tr><td>StringCache_Intern</td><td>100000</td><td>2,102.1 &mu;s</td><td>86.83 &mu;s</td><td>250.53 &mu;s</td><td>4.13 KB</td>
+</tr><tr><td>String_Intern</td><td>1000000</td><td>31,059.8 &mu;s</td><td>1,349.33 &mu;s</td><td>3,827.82 &mu;s</td><td>4.16 KB</td>
+</tr><tr><td>StringCache_Intern</td><td>1000000</td><td>40,368.6 &mu;s</td><td>1,279.83 &mu;s</td><td>3,713.02 &mu;s</td><td>4.15 KB</td>
+</tr></tbody></table>
+</body>
+</html>

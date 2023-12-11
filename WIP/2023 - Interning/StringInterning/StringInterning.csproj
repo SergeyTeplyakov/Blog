@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<ServerGarbageCollection>true</ServerGarbageCollection>
+	<LangVersion>latest</LangVersion>
+	<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	<PublishAot>true</PublishAot>
+	  <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.11" />
+  </ItemGroup>
+
+</Project>
