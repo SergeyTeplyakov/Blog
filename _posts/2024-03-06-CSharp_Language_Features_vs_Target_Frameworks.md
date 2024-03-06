@@ -133,23 +133,23 @@ if (n is [1, .. var x, 2])
 ```
 
 ## C# 10 Features
-| Language Feature                                                                                                    | Requirements                                                                        |
-| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| [Record structs](https://github.com/dotnet/csharplang/issues/4334)                                                  | No extra requirements                                                               |
-| [Global using directives](https://github.com/dotnet/csharplang/issues/3428)                                         | No extra requirements                                                               |
-| [Improved Definite Assignment](https://github.com/dotnet/csharplang/issues/4465)                                    | No extra requirements                                                               |
-| [Constant Interpolated Strings](https://github.com/dotnet/csharplang/issues/2951)                                   | No extra requirements                                                               |
-| [Extended Property Patterns](https://github.com/dotnet/csharplang/issues/4394)                                      | No extra requirements                                                               |
-| [Sealed record ToString](https://github.com/dotnet/csharplang/issues/4174)                                          | No extra requirements                                                               |
-| [Source generators V2 API](https://github.com/dotnet/roslyn/issues/51257)                                           | No extra requirements                                                               |
-| [Mix declarations and variables in deconstruction](https://github.com/dotnet/csharplang/issues/125)                 | No extra requirements                                                               |
-| [AsyncMethodBuilder override](https://github.com/dotnet/csharplang/issues/1407)                                     | `AsyncMethodBuilderAttribute` (1)                                                   |
-| [Enhanced `#line` directives](https://github.com/dotnet/csharplang/issues/4747)                                     | No extra requirements                                                               |
-| [Lambda improvements](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-10.0/lambda-improvements.md)  | No extra requirements                                                               |
-| [Interpolated string improvements](https://github.com/dotnet/csharplang/issues/4487)                                | `InterpolatedStringHandler`, `InterpolatedStringHandlerArgument` (2)                |
-| [File-scoped namespaces](https://github.com/dotnet/csharplang/issues/137)                                           | No extra requirements                                                               |
-| [Paremeterless struct constructors](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-10.0/parameterless-struct-constructors.md) | No extra requirements                                    |
-| [`CallerArgumentExpression`](https://github.com/dotnet/csharplang/issues/287)                                       | `CallerArgumentExpressionAttribute`                                                 |
+| Language Feature                                                                                                                               | Requirements                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [Record structs](https://github.com/dotnet/csharplang/issues/4334)                                                                             | No extra requirements                                                               |
+| [Global using directives](https://github.com/dotnet/csharplang/issues/3428)                                                                    | No extra requirements                                                               |
+| [Improved Definite Assignment](https://github.com/dotnet/csharplang/issues/4465)                                                               | No extra requirements                                                               |
+| [Constant Interpolated Strings](https://github.com/dotnet/csharplang/issues/2951)                                                              | No extra requirements                                                               |
+| [Extended Property Patterns](https://github.com/dotnet/csharplang/issues/4394)                                                                 | No extra requirements                                                               |
+| [Sealed record ToString](https://github.com/dotnet/csharplang/issues/4174)                                                                     | No extra requirements                                                               |
+| [Source generators V2 API](https://github.com/dotnet/roslyn/issues/51257)                                                                      | No extra requirements                                                               |
+| [Mix declarations and variables in deconstruction](https://github.com/dotnet/csharplang/issues/125)                                            | No extra requirements                                                               |
+| [AsyncMethodBuilder override](https://github.com/dotnet/csharplang/issues/1407)                                                                | `AsyncMethodBuilderAttribute` (1)                                                   |
+| [Enhanced `#line` directives](https://github.com/dotnet/csharplang/issues/4747)                                                                | No extra requirements                                                               |
+| [Lambda improvements](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-10.0/lambda-improvements.md)                             | No extra requirements                                                               |
+| [Interpolated string improvements](https://github.com/dotnet/csharplang/issues/4487)                                                           | `InterpolatedStringHandler`, `InterpolatedStringHandlerArgument` (2)                |
+| [File-scoped namespaces](https://github.com/dotnet/csharplang/issues/137)                                                                      | No extra requirements                                                               |
+| [Paremeterless struct constructors](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-10.0/parameterless-struct-constructors.md) | No extra requirements                                                               |
+| [`CallerArgumentExpression`](https://github.com/dotnet/csharplang/issues/287)                                                                  | `CallerArgumentExpressionAttribute`                                                 |
 
 ------
 (1) The full type name is `System.Runtime.CompilerServices.AsyncMethodBuilderAttribute`.
@@ -191,6 +191,6 @@ if (n is [1, .. var x, 2])
 | [stackalloc in nested contexts](https://github.com/dotnet/csharplang/issues/1412)                                                         | No extra requirements                                                                                            |
 | [Unmanaged generic structs](https://github.com/dotnet/csharplang/issues/1744)                                                             | No extra requirements                                                                                            |
 | [Static local functions](https://github.com/dotnet/csharplang/issues/1565)                                                                | No extra requirements                                                                                            |
-| [Readonly members](https://github.com/dotnet/csharplang/issues/1710)                                                                                                                                          | No extra requirements                                                                                                                 |
+| [Readonly members](https://github.com/dotnet/csharplang/issues/1710)                                                                      | No extra requirements                                                                                            |
 
 (1) There are a lot of attributes: - `[AllowNull]`, `[DisallowNull]`, `[DoesNotReturn]`, `[DoesNotReturnIf]`, `[MaybeNull]`, `[MaybeNullWhen]`, `[MemberNotNull], [MemberNotNullWhen]`, `[NotNull]`, `[NotNullIfNotNull]`, `[NotNullWhen]`
