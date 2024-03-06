@@ -104,24 +104,24 @@ And here I want to show all the language features from C# 12 down to C# 8 with t
 | Language Feature                                                                                                    | Requirements                                                                                         |
 | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | [File-local types](https://github.com/dotnet/csharplang/issues/6011)                                                | No extra requirements                                                                                |
-| [ref fields](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-11.0/low-level-struct-improvements.md) a.k.a. low level struct enhancements | .net7+                                                                                               |
+| [ref fields](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-11.0/low-level-struct-improvements.md) a.k.a. low level struct enhancements | .net7+                                                          |
 | [Required properties](https://github.com/dotnet/csharplang/issues/3630)                                             | `RequiredMemberAttribute`, `CompilerFeatureRequiredAttribute`,<br>`SetsRequiredMembersAttribute` (1) |
 | [Static abstract members in interfaces](https://github.com/dotnet/csharplang/issues/4436)                           | .net7+                                                                                               |
 | [Numeric IntPtr](https://github.com/dotnet/csharplang/issues/6065)                                                  | No extra requirements                                                                                |
 | [Unsigned right shift operator](https://github.com/dotnet/csharplang/issues/4682)                                   | No extra requirements                                                                                |
 | [utf8 string literals](https://github.com/dotnet/csharplang/issues/184)                                             | System.Memory nuget or .net2.1+                                                                      |
-| [Pattern matching on `ReadOnlySpan<char>`](https://github.com/dotnet/csharplang/issues/1881)                        | System.Memory nuget package to get `ReadOnlySpan` itself.                                                                                |
+| [Pattern matching on `ReadOnlySpan<char>`](https://github.com/dotnet/csharplang/issues/1881)                        | System.Memory nuget package to get `ReadOnlySpan` itself.                                            |
 | [Checked Operators](https://github.com/dotnet/csharplang/issues/4665)                                               | No extra requirements                                                                                |
 | [auto-default structs](https://github.com/dotnet/csharplang/issues/5737)                                            | No extra requirements                                                                                |
 | [Newlines in string interpolations](https://github.com/dotnet/csharplang/issues/4935)                               | No extra requirements                                                                                |
-| [List patterns](https://github.com/dotnet/csharplang/issues/3435)                                                   | `System.Index`, `System.Range`(2)                                                                                  |
+| [List patterns](https://github.com/dotnet/csharplang/issues/3435)                                                   | `System.Index`, `System.Range`(2)                                                                    |
 | [Raw string literals](https://github.com/dotnet/csharplang/issues/4304)                                             | No extra requirements                                                                                |
 | [Cache delegates for static method group](https://github.com/dotnet/roslyn/issues/5835)                             | No extra requirements                                                                                |
 | [nameof(parameter)](https://github.com/dotnet/csharplang/issues/373)                                                | No extra requirements                                                                                |
 | [Relaxing Shift Operator](https://github.com/dotnet/csharplang/issues/4666)                                         | No extra requirements                                                                                |
-| [Generic attributes](https://github.com/dotnet/csharplang/issues/124)                                               | No extra requirements                                                                                                     |
+| [Generic attributes](https://github.com/dotnet/csharplang/issues/124)                                               | No extra requirements                                                                                |
 
----
+------
 (1) The full type names are `System.Runtime.CompilerServices.RequiredMemberAttribute`, `System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute` and `System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute`
 
 (2) Some features are going to work only targeting net2.1 or netstandard2.1, for instance the following code requires `System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray` to be available:
@@ -151,7 +151,7 @@ if (n is [1, .. var x, 2])
 | [Paremeterless struct constructors](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-10.0/parameterless-struct-constructors.md) | No extra requirements                                    |
 | [`CallerArgumentExpression`](https://github.com/dotnet/csharplang/issues/287)                                       | `CallerArgumentExpressionAttribute`                                                 |
 
----
+------
 (1) The full type name is `System.Runtime.CompilerServices.AsyncMethodBuilderAttribute`.
 (2) The full type names are `System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute` and `System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute`.
 
@@ -174,7 +174,7 @@ if (n is [1, .. var x, 2])
 | [Extending partials](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-9.0/extending-partial-methods.md) | No extra requirements            |
 | [Top level statements](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-9.0/top-level-statements.md)    | No extra requirements            |
 
----
+------
 (1) The full type name is `System.Runtime.CompilerServices.ModuleInitializerAttribute`.
 
 ## C# 8 Features
