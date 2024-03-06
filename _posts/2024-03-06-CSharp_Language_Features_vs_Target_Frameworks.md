@@ -125,6 +125,7 @@ And here I want to show all the language features from C# 12 down to C# 8 with t
 (1) The full type names are `System.Runtime.CompilerServices.RequiredMemberAttribute`, `System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute` and `System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute`
 
 (2) Some features are going to work only targeting net2.1 or netstandard2.1, for instance the following code requires `System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray` to be available:
+
 ```csharp
 int[] n = new int[]{ 1 };  
 if (n is [1, .. var x, 2])  
@@ -133,6 +134,7 @@ if (n is [1, .. var x, 2])
 ```
 
 ## C# 10 Features
+
 | Language Feature                                                                                                                               | Requirements                                                                        |
 | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [Record structs](https://github.com/dotnet/csharplang/issues/4334)                                                                             | No extra requirements                                                               |
@@ -156,6 +158,7 @@ if (n is [1, .. var x, 2])
 (2) The full type names are `System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute` and `System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute`.
 
 ## C# 9 Features
+
 | Language Feature                                                                                                       | Requirements                     |
 | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | [Target-typed new](https://github.com/dotnet/csharplang/issues/100)                                                    | No extra requirements            |
@@ -178,6 +181,7 @@ if (n is [1, .. var x, 2])
 (1) The full type name is `System.Runtime.CompilerServices.ModuleInitializerAttribute`.
 
 ## C# 8 Features
+
 | Language Feature                                                                                                                          | Requirements                                                                                                     |
 | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | [Default Interface Methods](https://github.com/dotnet/csharplang/blob/main/proposals/csharp-8.0/default-interface-methods.md)             | .net core 3.1+                                                                                                   |
@@ -193,4 +197,5 @@ if (n is [1, .. var x, 2])
 | [Static local functions](https://github.com/dotnet/csharplang/issues/1565)                                                                | No extra requirements                                                                                            |
 | [Readonly members](https://github.com/dotnet/csharplang/issues/1710)                                                                      | No extra requirements                                                                                            |
 
+------
 (1) There are a lot of attributes: - `[AllowNull]`, `[DisallowNull]`, `[DoesNotReturn]`, `[DoesNotReturnIf]`, `[MaybeNull]`, `[MaybeNullWhen]`, `[MemberNotNull], [MemberNotNullWhen]`, `[NotNull]`, `[NotNullIfNotNull]`, `[NotNullWhen]`
