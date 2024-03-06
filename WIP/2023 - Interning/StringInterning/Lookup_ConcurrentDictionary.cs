@@ -6,129 +6,19 @@ using BenchmarkDotNet.Attributes;
 
 namespace StringInterning;
 
-[SimpleJob(iterationCount: 1_000)]
-public class LookupBenchmark
-{
-    private List<string> Keys;
-    private List<string> Values;
-    private static Random random = new Random(42);
-
-    [Params(10_000, 100_000)]
-    public int KeyCount { get; set; }
-
-    [Params(10, 100)]
-    public int ValueCount { get; set; }
-
-    private Lookup<string, string> OldLookup;
-    private Lookup<string, string> NewLookup;
-
-    [GlobalSetup]
-    public void Setup()
-    {
-        Keys = Enumerable.Range(1, KeyCount).Select(n => n.ToString()).ToList();
-        Values = Enumerable.Range(1, ValueCount).Select(n => n.ToString()).ToList();
-    }
-
-    [IterationSetup]
-    public void IterationSetup()
-    {
-        OldLookup = new Lookup<string, string>(StringComparer.OrdinalIgnoreCase, StringComparer.OrdinalIgnoreCase);
-        NewLookup = new Lookup<string, string>(StringComparer.OrdinalIgnoreCase, StringComparer.OrdinalIgnoreCase, useSharedLock: false);
-    }
-
-    [Benchmark]
-    public void Add_SharedLock()
-    {
-        AddEverything(OldLookup);
-    }
-
-    [Benchmark]
-    public void Add_DifferentLock()
-    {
-        AddEverything(NewLookup);
-    }
-
-    private void AddEverything(Lookup<string, string> lookup)
-    {
-        for (int i = 0; i < 10 * Keys.Count; i++)
-        {
-            var keyIdx = random.Next(Keys.Count);
-            var valueIdx = random.Next(Values.Count);
-            lookup.AddValue(Keys[keyIdx], Values[valueIdx]);
-        }
-    }
-}
-public static class LookupStress
-{
-    public static async Task Stress(CancellationToken token)
-    {
-        var lookup = new Lookup<string, string>(StringComparer.Ordinal, StringComparer.Ordinal);
-        int count = 10_000;
-        List<string> keys = Enumerable.Range(1, count).Select(n => n.ToString()).ToList();
-        var rnd = new Random();
-        int writersCount = 8;
-        var values = Enumerable.Range(1, writersCount).Select(n => n.ToString()).ToList();
-
-        //var reader = Enumerable.Range(1, readersCount).Select(_ => Task.Factory.StartNew(() =>
-        //{
-        //    while (!token.IsCancellationRequested)
-        //    {
-        //        var idx = rnd.Next(keys.Count);
-        //        lookup.Contains(keys[idx]);
-        //    }
-        //}, TaskCreationOptions.LongRunning));
-
-
-        var writers = Enumerable.Range(1, writersCount).Select(writer =>
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    var key = keys[i];
-                    lookup.AddValue(key, writer.ToString());
-                }
-            }, TaskCreationOptions.LongRunning);
-        }).ToList();
-
-        //var remover = Task.Factory.StartNew(() =>
-        //{
-        //    while (!token.IsCancellationRequested)
-        //    {
-        //        var idx = rnd.Next(keys.Count);
-        //        lookup.RemoveKey(keys[idx]);
-        //    }
-        //});
-
-        //writers.AddRange(reader);
-        //writers.Add(remover);
-        await Task.WhenAll(writers);
-        long totalCount = 0;
-        foreach(var key in keys)
-        {
-            totalCount += lookup[key].Count;
-        }
-
-        if (totalCount != count * writersCount)
-        {
-            Console.WriteLine($"Keys.Count: {keys.Count}, Total: {totalCount}");
-            Debugger.Launch();
-        }
-    }
-}
 
 /// <summary>
 /// Helper class to create a lookup for parallel operation.
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TValue">The type of the value.</typeparam>
-internal class Lookup<TKey, TValue> : ILookup<TKey, TValue>
+internal class Lookup_ConcurrentDictionary<TKey, TValue> : ILookup<TKey, TValue>
     where TKey : class
 {
     ///// <summary>
     ///// The write lock to make sure there is only one thread is writing.
     ///// </summary>
-    private readonly object writeLock;
+    //private readonly object writeLock;
 
     //private readonly ConcurrentDictionary<TKey, Grouping> content;
 
@@ -140,19 +30,16 @@ internal class Lookup<TKey, TValue> : ILookup<TKey, TValue>
     private readonly bool _useSharedLock;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Lookup{KeyT, ValueT}"/> class.
+    /// Initializes a new instance of the <see cref="Lookup_old{TKey,TValue}"/> class.
     /// </summary>
     /// <param name="keyComparer">The comparer of the keys.</param>
     /// <param name="valueComparer">The comparer of the values.</param>
-    public Lookup(
-        IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer,
-        bool useSharedLock = false)
+    public Lookup_ConcurrentDictionary(
+        IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
     {
         //writeLock = new object();
         content = new ConcurrentDictionary<TKey, Grouping>(keyComparer);
-        //content = new Dictionary<TKey, Grouping>(keyComparer);
         comparer = valueComparer;
-        _useSharedLock = useSharedLock;
     }
 
     /// <inheritdoc/>

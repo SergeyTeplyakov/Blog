@@ -1,5 +1,6 @@
 ﻿//using BenchmarkDotNet.Running;
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net;
 using BenchmarkDotNet.Configs;
@@ -70,35 +71,13 @@ namespace StringInterning
             Console.WriteLine($"Validated that all the strings are interned in {sw.Elapsed}!");
         }
 
-        static async Task Stress()
-        {
-            var cts = new CancellationTokenSource();
-            long count = 0;
-            cts.CancelAfter(TimeSpan.FromMinutes(150));
-            Task.Run(async () =>
-            {
-                while (!cts.IsCancellationRequested)
-                {
-                    var old = Interlocked.Read(ref count);
-                    
-                    await Task.Delay(1000, cts.Token);
-                    var @new = Interlocked.Read(ref count);
-                    Console.WriteLine($"Performed {(@new - old)} runs. {@new} overall...");
-                }
-            });
-
-            while (!cts.IsCancellationRequested)
-            {
-                await LookupStress.Stress(cts.Token);
-                Interlocked.Increment(ref count);
-            }
-        }
-
         static void Main(string[] args)
         {
             //LookupStress.Stress(CancellationToken.None).GetAwaiter().GetResult();
             //Stress().GetAwaiter().GetResult();
-            //BenchmarkRunner.Run<LookupBenchmark>();
+            BenchmarkRunner.Run<StringInterningBenchmarks>();
+
+            //Console.WriteLine();
             // Check();
             //var token = new CancellationTokenSource(delay: TimeSpan.FromSeconds(2));
             //LookupStress.Stress(token.Token).GetAwaiter().GetResult();
@@ -108,34 +87,34 @@ namespace StringInterning
             //    .Run(args, config);
             //BenchmarkRunner.Run<StringInterningBenchmarks>();
 
-            var bm = new StringInterningBenchmarks() { Count = 10 };
-            bm.Setup();
-            bm.String_Intern();
-            bm.StringCache_Intern();
+            //var bm = new StringInterningBenchmarks() { Count = 10 };
+            //bm.Setup();
+            //bm.String_Intern();
+            //bm.StringCache_Intern();
 
-            bm.Count = 10_000_000;
-            bm.Setup();
-            GC.Collect();
-            // to make it easier to see the sections in profiling session
-            Thread.Sleep(2_000);
+            //bm.Count = 10_000_000;
+            //bm.Setup();
+            //GC.Collect();
+            //// to make it easier to see the sections in profiling session
+            //Thread.Sleep(2_000);
 
-            var sw = Stopwatch.StartNew();
-            // The first call will populate the cache
-            // and the second one will mostly read from the cache.
-            for (int i = 0; i < 10; i++)
-                bm.StringCache_Intern();
+            //var sw = Stopwatch.StartNew();
+            //// The first call will populate the cache
+            //// and the second one will mostly read from the cache.
+            //for (int i = 0; i < 10; i++)
+            //    bm.StringCache_Intern();
 
-            Console.WriteLine($"Custom string interning is done in {sw.Elapsed}");
+            //Console.WriteLine($"Custom string interning is done in {sw.Elapsed}");
 
-            GC.Collect();
-            // to make it easier to see the sections in profiling session
-            Thread.Sleep(2_000);
-            sw.Restart();
+            //GC.Collect();
+            //// to make it easier to see the sections in profiling session
+            //Thread.Sleep(2_000);
+            //sw.Restart();
 
-            for (int i = 0; i < 10; i++)
-                bm.String_Intern();
+            //for (int i = 0; i < 10; i++)
+            //    bm.String_Intern();
 
-            Console.WriteLine($"String interning is done in {sw.Elapsed}");
+            //Console.WriteLine($"String interning is done in {sw.Elapsed}");
 
 
 

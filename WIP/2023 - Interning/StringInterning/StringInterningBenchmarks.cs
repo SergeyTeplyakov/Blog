@@ -2,6 +2,8 @@
 //using BenchmarkDotNet.Jobs;
 
 using System.Diagnostics;
+using Azure.CorrelationPlatform.Common.StringsInterning;
+
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Roslyn.Utilities;
@@ -50,6 +52,12 @@ public class StringInterningBenchmarks
     public void StringCache_Intern()
     {
         _list.AsParallel().ForAll(static s => StringCache.Intern(s));
+    }
+    
+    [Benchmark]
+    public void StringInterningCache_Intern()
+    {
+        _list.AsParallel().ForAll(static s => StringsInterningCache.Instance.Intern(s));
     }
 
     public void Validate_String_Intern()
