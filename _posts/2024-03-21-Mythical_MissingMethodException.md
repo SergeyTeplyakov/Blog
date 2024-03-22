@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Figuring out mysterious `MissingMethodException` in a simple C# application
-categories: C#
+categories: csharp
 ---
 
 As we already know from [C# Language Features vs. Target Frameworks](https://sergeyteplyakov.github.io/Blog/c%23/2024/03/06/CSharp_Language_Features_vs_Target_Frameworks.html) you can use most of the latest C# language features targeting .Net Standard or Full Framework. Some features just work with any target frameworks, but some require special attributes or types to be defined during compilation.
