@@ -56,10 +56,7 @@ Console.WriteLine("Done!");
 
 Here is the dependency diagram:
 
-```mermaid
-flowchart LR
-    A["Application.csproj<br/>(net8.0)"] ---> B["Library.csproj<br/>(netstandard2.0)"] ---> C["Core.csproj<br/>(netstandard2.0+net8.0)"]
-```
+![Diagram1](/Blog/assets/diagram1.png "Diagram1")
 
 Would you expect any issues with this code? Me neither, to be honest!
 But here is the output:
@@ -71,7 +68,6 @@ Unhandled exception. System.MissingMethodException: Method not found: 'Void Conf
 ```
 
 ![WAT](/Blog/assets/jackie_chan_meme.jpg "WAT")
-![[Pasted image 20240303130743.png]]
 
 You can check the IL, and you'll see that the `set_X(Int32)` "method" (which is a property) is definitely exists in the `Config` class. But why do we get the error? Is it a compiler bug? Not really!
 
@@ -80,10 +76,7 @@ So here is the issue. Even though the `Core.csproj` is multi-targeted, the quest
 
 Sine `Application` project targets `net8.0` and implicitly references `Core.csproj`, the `net8.0` version is deploy. 
 
-```mermaid
-flowchart LR
-    A["Application.exe<br/>(net8.0)"] ---> B["Library.dll<br/>(netstandard2.0)"] ---> C["Core.dll<br/>(net8.0)"]
-```
+![Diagram2](/Blog/assets/diagram2.png "Diagram2")
 
 Is it a problem? Actually, yes, it is. Let's check the IL for the `ConfigFactory`:
 ```il
