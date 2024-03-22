@@ -56,7 +56,7 @@ Console.WriteLine("Done!");
 
 Here is the dependency diagram:
 
-![Diagram1](/Blog/assets/diagram1.png "Diagram1")
+![Diagram1](/Blog/assets/Diagram1.png "Diagram1")
 
 Would you expect any issues with this code? Me neither, to be honest!
 But here is the output:
@@ -76,7 +76,7 @@ So here is the issue. Even though the `Core.csproj` is multi-targeted, the quest
 
 Sine `Application` project targets `net8.0` and implicitly references `Core.csproj`, the `net8.0` version is deploy. 
 
-![Diagram2](/Blog/assets/diagram2.png "Diagram2")
+![Diagram2](/Blog/assets/Diagram2.png "Diagram2")
 
 Is it a problem? Actually, yes, it is. Let's check the IL for the `ConfigFactory`:
 ```il
