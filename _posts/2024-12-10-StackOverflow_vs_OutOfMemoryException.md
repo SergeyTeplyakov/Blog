@@ -4,15 +4,19 @@ title: StackOverflowException vs. OutOfMemoryException
 categories: csharp
 ---
 
-I was looking into crash dumps for one of our service and was puzzled by one group of crashes. The crashes were caused by `StackOverflowException` with relatively short stack traces. Nothing like an infinite recursion, just a logging method that was allocating 64K on the stack. It was a windows process without any changes in the thread creation logic, so each stack should have 1Mb and it was strange to see a stack overflow in this case.
+I was investigating crash dumps for one of our services and faced a puzzling group of crashes. These crashes were caused by a `StackOverflowException` with relatively short stack traces. It wasn't due to infinite recursion, just a logging method that was allocating 64K on the stack. Given that it was a Windows process with standard thread creation logic, each stack should have 1MB, making a stack overflow in this case not possible.
 
-After digging deeper into the issue, I've realized that the crashing process was running inside a job object with memory constraints and each crash dump memory size was equal to the job object memory limit. So is it possible that the `StackOverflowException` was actually masking an out of memory condition?
+After digging deeper, I realized that the crashing process was running inside a job object with memory constraints. Each crash dump's memory size was equal to the job object's memory limit. So, is it possible that the `StackOverflowException` was actually masking an out-of-memory condition?
 
-The short answer is, yes: If you run in a memory constraint environment, stack allocation can cause `StackOverflowException` because the 1Mb stack memory is not committed during a thread construction.
+The short answer is yes. In a memory-constrained environment, stack allocation can trigger a `StackOverflowException` because the 1MB stack memory is not committed during thread construction, instead the stack memory is just reserved and committed on demand.
 
-To reproduce the issue we need two processes. One will create a bunch of threads, allocate quite a bit of memory to be close the memory limits and then stack allocate a decent chunks on each stack, like 64K. And another process will start the first process inside the job object.
+To reproduce the issue, we need two processes:
 
-For .net3.0+ applications, its possible to [control the memory limit](https://learn.microsoft.com/en-us/dotnet/core/runtime-config/garbage-collector#heap-limit) via `System.GC.HeapHardLimit` setting but this won't reproduce  our issue, since the setting control the heap size and not the overall memory size. So the job objects is the way to go.
+One process will create multiple threads, allocate a significant amount of memory to approach the memory limits, and then perform substantial stack allocations (e.g., 64K) on each stack.
+
+Another process will start the first process inside the job object.
+
+For .NET 3.0+ applications, it's possible to [control the memory limit](https://learn.microsoft.com/en-us/dotnet/core/runtime-config/garbage-collector#heap-limit) via the `System.GC.HeapHardLimit` setting. However, this won't reproduce our issue since this setting controls the heap size, not the overall memory size. Thus, using job objects is the way to go.
 
 Here is the code for the first process that will run under ~100Mb limit:
 
@@ -20,8 +24,7 @@ Here is the code for the first process that will run under ~100Mb limit:
 static async Task Main(string[] args)
 {
     Console.WriteLine("Starting tasks");
-    // Will communicate with the threads that they can proceed
-    // and stack allocate buffers.
+    // Will notify the threads to do the stack allocation.
     var @event = new ManualResetEvent(initialState: false);
     var tasks = new List<Task>();
     for (int i = 0; i < 512; i++)
@@ -50,12 +53,14 @@ static async Task Main(string[] args)
 
     Console.WriteLine("Allocating a large array");
     
-    // Allocating ~55Mb is enough to hit the issue.
+    // Allocating ~55Mb. It's enough to hit the issue.
     byte[] data = new byte[55_000_000];
     Console.WriteLine("Allocated a large array");
 
     Console.WriteLine("Releasing threads");
-    @event.Set(); // releasing the threads
+    // releasing the threads
+    @event.Set();
+
     await Task.WhenAll(tasks);
     Console.WriteLine("Done");
 
@@ -67,7 +72,7 @@ And here a launcher:
 
 ```csharp
 // This is a project in the same solution.
-// Getting a path to the executable in the bin/debug
+// Getting a path to the executable in the bin/debug folder
 string fileName = @"..\..\bin\Debug\net472\StackOverflowAndOutOfMemory.exe";
 
 ProcessStartInfo startInfo = new ProcessStartInfo(fileName);
@@ -83,7 +88,7 @@ jobObject.AssignProcess(process!);
 
 ```
 
-This project uses [`Meziantou.Framework.Win32.Jobs`](https://www.nuget.org/packages/Meziantou.Framework.Win32.Jobs), an amazing project that can do a bunch of stuff, including using job objects from .NET.
+This code uses [`Meziantou.Framework.Win32.Jobs`](https://www.nuget.org/packages/Meziantou.Framework.Win32.Jobs), an amazing project that can do a bunch of stuff, including using job objects from .NET.
 
 And here is the output:
 
