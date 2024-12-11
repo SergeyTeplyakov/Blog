@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetStandardVsNet8Perf", "Program\NetStandardVsNet8Perf.csproj", "{37158C64-9149-42BB-AEC8-D38220666980}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetStandardLib", "NetStandardLib\NetStandardLib.csproj", "{34A8F15E-85A6-4A4A-BD97-1BBD6CA17560}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37158C64-9149-42BB-AEC8-D38220666980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37158C64-9149-42BB-AEC8-D38220666980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37158C64-9149-42BB-AEC8-D38220666980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37158C64-9149-42BB-AEC8-D38220666980}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34A8F15E-85A6-4A4A-BD97-1BBD6CA17560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34A8F15E-85A6-4A4A-BD97-1BBD6CA17560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34A8F15E-85A6-4A4A-BD97-1BBD6CA17560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34A8F15E-85A6-4A4A-BD97-1BBD6CA17560}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
