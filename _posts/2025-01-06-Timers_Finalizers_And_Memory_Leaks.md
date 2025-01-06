@@ -91,7 +91,7 @@ The output shows, that the `refresher` instance is alive, even though the instan
 - - - - - - - - 
 ( * ) When dealing with something non-obvious like GC behavior, always double-check the correctness of the experiment. I've intentionally added another instance (object `o`) to make sure a non-rooted object is collected by the GC. The GC is quite tricky and has a bunch of optimizations like [GCInfo](https://github.com/dotnet/runtime/blob/main/src/coreclr/inc/gcinfo.h), responsible for tracking the lifetime of local variables. Such optimizations might be on or off depending on the context. For instance, GCInfo is off in debug mode and in Tier0 compilation. Try your best to avoid drawing the wrong conclusions based on flawed experiments..
 
-![[Pasted image 20241227113524.png]]
+![Application roots](/Blog/assets/2025_01_06_Timers.png "Application Roots")
 The image shows the dependency path from the instance to an application root. We can see that the `DataRefresher` instance is eventually referenced by `DelayPromise`, which is backed by the timer queue. Since the timer is still running, the instance is still reachable, and because it is reachable, the finalization cannot stop the timer, leading to a chicken-and-egg situation where our 'safety net' (the finalizer) doesn't work.
 ## How to fix the issue?
 Finalizers are designed to clean up unmanaged resources, but they can be useful in other cases too. When a `Task` or `Task<T>` fails and the user doesn't observe the result, the finalizer raises a `TaskScheduler.TaskUnobservedException` event. We can apply the same principle here to ensure the 'refresher' doesn't cause a memory leak if it is not properly disposed. ( * * ), ( * * * ).
