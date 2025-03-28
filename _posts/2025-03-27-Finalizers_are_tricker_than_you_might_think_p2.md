@@ -169,43 +169,8 @@ From the CLR’s perspective the instance method is just a static method where t
 
 Let’s get back to our example and show exactly what is going on at runtime when the following call is made: `new RocksDbWrapper().UseRocksDb()`:
 
-```mermaid
-sequenceDiagram
-    participant Program
-    participant RocksDbWrapper
-    participant RocksDbNative
-    participant GC
-  
-    Program->>RocksDbWrapper: new RocksDbWrapper()
-    activate RocksDbWrapper
-    RocksDbWrapper->>RocksDbNative: CreateDb()
-    activate RocksDbNative
-    RocksDbNative-->>RocksDbWrapper: handle
-    deactivate RocksDbNative
-    RocksDbWrapper-->>Program: RocksDbWrapper instance
-    deactivate RocksDbWrapper
-  
-    Program->>RocksDbWrapper: UseRocksDb()
-    activate RocksDbWrapper
-    RocksDbWrapper->>RocksDbWrapper: Copy Handle On The Stack
-    deactivate RocksDbWrapper
-    note over RocksDbWrapper: RocksDbWraper is eligible for GC
-    RocksDbWrapper->>RocksDbNative: UseDb(handleCopy)
-    activate RocksDbNative
-    RocksDbNative->>RocksDbNative: PerformLongRunningPrerequisite()
-    RocksDbNative->>GC: GC.Collect()
-    note over GC: RocksDbWrapper moved to finalization queue
-    RocksDbNative->>GC: GC.Collect()
-    note over GC: Running finalizers
-    GC->>RocksDbWrapper: ~RocksDbWrapper()
-    activate RocksDbWrapper
-    RocksDbWrapper->>RocksDbNative: DestroyDb(handle)
-    deactivate RocksDbWrapper
-    note over RocksDbNative: Handle is now invalid
-    RocksDbNative->>RocksDbNative: PInvokeIntoDb(handle)
-    note over RocksDbNative: Exception thrown due to invalid handle
-    deactivate RocksDbNative
-```
+![Diagram](/Blog/assets/2025_finalizer_p2.png "Diagram")
+
 If you’re asking yourself, is it possible to have this in real world, the answer is: **For sure!**
 
 So, what’s the solution?
