@@ -169,7 +169,7 @@ From the CLR’s perspective the instance method is just a static method where t
 
 Let’s get back to our example and show exactly what is going on at runtime when the following call is made: `new RocksDbWrapper().UseRocksDb()`:
 
-![Diagram](/Blog/assets/2025_finalizer_p2.png "Diagram")
+![Diagram](/Blog/assets/2025_finalizers_p2.png "Diagram")
 
 If you’re asking yourself, is it possible to have this in real world, the answer is: **For sure!**
 
